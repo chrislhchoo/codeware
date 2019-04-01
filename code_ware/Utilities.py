@@ -1,12 +1,13 @@
-import time,datetime,timeit
+import time
+from datetime import datetime as dtm
 class converter:
     def __init__(self):
-        import time,datetime
+        pass
     def str2date(self,dtstr):
-        ret = datetime.datetime.strptime(dtstr, "%Y-%m-%d")
+        ret = dtm.strptime(dtstr, "%Y-%m-%d")
         return ret
     def tsp2tm(self,timestamp):
-        ret=datetime.datetime.fromtimestamp(timestamp)
+        ret=dtm.fromtimestamp(timestamp)
         print(ret)
         return ret
     def tsp2dt(self, timestamp):
@@ -22,6 +23,6 @@ if __name__=="__main__":
     # t1 = 1000*timeit.timeit("math.exp(3)",'import math',number=count)
     # t2= 1000*timeit.timeit("pow(math.e,3)",'import math',number=count)
     # t0,t1,t2=round(t0,2),round(t1,2),round(t2,2)
-    print(f'{t0}\t{t1}\t{t2}')
+    #print(f'{t0}\t{t1}\t{t2}')
 
     #a+=1
