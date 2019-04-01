@@ -1,15 +1,18 @@
 import time,timeit
 from datetime import datetime as dtm
 class converter:
-    def __init__(self):
-        pass
+    # def __init__(self):
+    #     pass
+    #convert string format to date
     def str2date(self,dtstr):
         ret = dtm.strptime(dtstr, "%Y-%m-%d")
         return ret
+    # convert timestamp to datetime
     def tsp2tm(self,timestamp):
         ret=dtm.fromtimestamp(timestamp)
         print(ret)
         return ret
+    #convert timestamp to date
     def tsp2dt(self, timestamp):
         ret=self.tsp2tm(timestamp)
         ret=self.str2date(str(ret).split(' ')[0])
