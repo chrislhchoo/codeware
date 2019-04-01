@@ -28,5 +28,5 @@ if __name__=='__main__':
             x.append(1)
     plt.plot(x,y)
     avg=round((y[-1]-y[0])/x[-1],2)
-    print(f'平均每天{avg}公里')
+    print(f'{avg}Kilometer Per Day')
     plt.show()
