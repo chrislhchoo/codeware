@@ -1,4 +1,4 @@
-import time
+import time,timeit
 from datetime import datetime as dtm
 class converter:
     def __init__(self):
@@ -17,12 +17,10 @@ class converter:
 if __name__=="__main__":
     a=converter()
     print(a.tsp2dt(1545730074))
-    # count=100000
-    # t0 = 1000*timeit.timeit('start_date = datetime.datetime.strptime(a, "%Y-%m-%d")',
-    #                         "import datetime\na='2019-9-9'", number=count)
-    # t1 = 1000*timeit.timeit("math.exp(3)",'import math',number=count)
-    # t2= 1000*timeit.timeit("pow(math.e,3)",'import math',number=count)
-    # t0,t1,t2=round(t0,2),round(t1,2),round(t2,2)
-    #print(f'{t0}\t{t1}\t{t2}')
+    count=100000
+    t0 = 1000*timeit.timeit('start_date = datetime.datetime.strptime(a, "%Y-%m-%d")',
+                            "import datetime\na='2019-9-9'", number=count)
+    t0=round(t0,2)
+    print(f'{t0}')
 
     #a+=1
