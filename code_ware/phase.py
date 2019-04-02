@@ -1,15 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-* State Street : ESG_Analytics
+Analytics
 *
-* Author: Meghana Wagle, Quantitative Analytic developer at State Street
-*         mwagle@statestreetgx.com
+* Author: 
 * Date:   2017-10-10
 *
-*
-* copyright (c) 2016, 2017 State Street Bank & Trust Co.
-% Description:	It gets the data for securities in portfolio,
-%		        and launch valuation calculation for each period in parallel
 """
 
 
