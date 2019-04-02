@@ -1,14 +1,10 @@
 import time,timeit,pandas as pd,re
 from datetime import datetime as dtm
 class converter:
-    # def __init__(self):
-    #     pass
-    #convert string format to date
     def str2date(self,dtstr):
-        isalphabeta=re.findall(r'[a-zA-Z]+',dtstr)
-        if len(isalphabeta)==0:
+        abc=re.findall(r'[a-zA-Z]+',dtstr)
+        if len(abc)==0:
             partition=re.findall(r'\d+',dtstr)
-            print(partition)
             if len(partition)>=2:#not pure number'2019-3-3'
                 list=dtstr.split(' ')
                 if len(list)>=1:
@@ -46,8 +42,23 @@ class converter:
                     s=0
                     #print(yy, mm, dd,h,M,s)
                     ret=dtm(yy, mm, dd,h,M,s)
-        elif len(isalphabeta)>=1:
-            pass
+        elif len(abc)==1:
+            partition = re.findall(r'\d+', dtstr)
+            temp=[]
+            for i,j in enumerate(abc):
+                if len(j)==3:
+                    month = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']
+                    for m,n in enumerate(month):
+                        if n==j.upper():
+                            j=m+1
+                            mm = j
+                            break
+            for i in partition:
+                if len(i)==4:
+                    yy = int(i)
+                elif len(i)==2:
+                    dd=int(i)
+        ret=dtm(yy,mm,dd)
         return ret
     # convert timestamp to datetime
     def tsp2tm(self,timestamp):
@@ -66,8 +77,8 @@ class converter:
         return ret
 if __name__=="__main__":
     a=converter()
-    b=a.tsp2dt(1545730074)
-    x='2019-1-1 3:3'
+    #b=a.tsp2dt(1545730074)
+    x='mar 2019 12'
     c=a.obj2pdtsp(x)
     print(type(c))
     # print(type(x))
