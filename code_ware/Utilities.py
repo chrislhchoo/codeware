@@ -8,6 +8,7 @@ class converter:
         isalphabeta=re.findall(r'[a-zA-Z]+',dtstr)
         if len(isalphabeta)==0:
             partition=re.findall(r'\d+',dtstr)
+            print(partition)
             if len(partition)>=2:#not pure number'2019-3-3'
                 list=dtstr.split(' ')
                 if len(list)>=1:
@@ -16,7 +17,10 @@ class converter:
                     if dtstr.replace(' ','')==dtstr:
                         ret = dtm.strptime(dtstr, f"%Y{delimit}%m{delimit}%d")
                     elif dtstr.replace(' ','')!=dtstr:
-                        ret = dtm.strptime(dtstr, f"%Y{delimit}%m{delimit}%d %H:%M:%S")
+                        if len(partition)==6:
+                            ret = dtm.strptime(dtstr, f"%Y{delimit}%m{delimit}%d %H:%M:%S")
+                        elif len(partition)==5:
+                            ret = dtm.strptime(dtstr, f"%Y{delimit}%m{delimit}%d %H:%M")
             elif len(partition)==1:#pure number['20190303','20190909232323','201901010101']
                 if len(dtstr)==8:
                     yy=int(dtstr[:4])
@@ -63,7 +67,7 @@ class converter:
 if __name__=="__main__":
     a=converter()
     b=a.tsp2dt(1545730074)
-    x='Feb 4 2019'
+    x='2019-1-1 3:3'
     c=a.obj2pdtsp(x)
     print(type(c))
     # print(type(x))
