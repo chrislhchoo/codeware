@@ -173,8 +173,6 @@ def build_portfolio_analysis_data(analysis_date, next_day, port_date_subset, por
 
     analysis_data['SECURITY_WEIGHT'] = (analysis_data['BASE_VALUE_ON_ANALYSIS_DATE']/analysis_data['BASE_VALUE_ON_ANALYSIS_DATE'].abs().sum()).as_matrix()
     return analysis_data
-
-
 def calculate_daily_port_values(port_date_index, run_dates, port_cfg, dt_index):
     """
     :param port_date_index: list of portfolio update dates
@@ -252,17 +250,18 @@ def calculate_daily_port_values(port_date_index, run_dates, port_cfg, dt_index):
     security_data_wide = security_data_wide.sort_values(['EFFECTIVE_DATE','SECURITY_ID'], axis=0)
 
     """ Loop through each analysis date in period and generate security value data """
-    pqueue,log_queue,ret_queue= Queue(),Queue(),Queue()
+    pqueue,log_queue,ret_queue,pid_queue= Queue(),Queue(),Queue(),Queue()
     mgr = Manager()
-    ns= mgr.list()
     for dt_current_index in range(daily_dates.size):
         pqueue.put(daily_dates[dt_current_index].date())
         # if pqueue.qsize()>=10:
         #     break
-    cpus=8
+    cpus=2
     p,portDT, Shape0, Shape1 = [], [], [],[]
     past=time.time()
     print('---------------------------------Start to Parallel')
+    deamone=Process(target=deamoned,args=())
+    deamone.start()
     for i in range(cpus):
         p.append(Process(target=paralleled,args=(i,port_date_subset,port_cfg,portfolio_id,pqueue,log_queue,security_data_wide,port_data,ccy_data,ret_queue)))
     #p.append(Process(target=data_write_in,args=(pqueue,ret_queue)))
@@ -317,30 +316,22 @@ def data_write_in(pqueue,ret_queue):
 
 def paralleled(num,port_date_subset, port_cfg, portfolio_id, pqueue,log_queue,security_data_wide,port_data,ccy_data,ret_queue):
     while not pqueue.empty():
-        print(f'进程{num}提取数据')
         analysis_date = pqueue.get(block=True, timeout=0.01)
+        print(f'进程{num},{pqueue.qsize()}')
         next_day = (analysis_date + BDay(1)).date()
         #try:
         tic = timeit.default_timer()
         """ Build portfolio data needed for analysis date to run """
-        #print(dtm.now().strftime('%Y-%m-%d.%H.%M.%S.%f') + ': Processing date -', analysis_date)
-        # security_data_wide=data.security_data_wide
-        # port_data = data.port_data
-        # ccy_data = data.ccy_data
         analysis_data = build_portfolio_analysis_data(analysis_date, next_day, port_date_subset, port_cfg, security_data_wide, port_data, ccy_data)
-        print(f'进程{num}生成中间结果')
         """ Dataframe to save security_level data """
         security_value_df = analysis_data.copy()
-        #save the simple return
-        #security_value_df['BASE_CURRENCY_TR_NEXT_DAY'] = np.log(security_value_df['BASE_CURRENCY_TR_NEXT_DAY']+1)
+
         security_value_df['PORTFOLIO_ID'] = [portfolio_id] * security_value_df.shape[0]
         security_value_df['CLIENT_ID'] = [port_cfg['CLIENT_ID']] * security_value_df.shape[0]
         security_value_df['EFFECTIVE_DATE'] = [analysis_date] * security_value_df.shape[0]
         security_value_df['CREATE_DATE'] = [dtm.now()] * security_value_df.shape[0]
         security_value_df.reset_index(inplace=True)
         security_value_df.drop('SECURITY_CLIENT_ID',1, inplace=True)
-        # except:
-        #     print('Failed to drop column "SECURITY_CLIENT_ID"')
         security_value_df.drop(['index', 'USD_VALUE_ON_PORT_DATE', 'CLOSING_PRICE_USD',
                                 'TOTAL_RETURN_USD_LOG', 'TOTAL_RETURN_USD_LOG_CUMUL'], 1, inplace=True)
         security_value_df.rename(columns={'BASE_VALUE_ON_ANALYSIS_DATE': 'BASE_CURRENCY_VALUE'},
@@ -348,7 +339,6 @@ def paralleled(num,port_date_subset, port_cfg, portfolio_id, pqueue,log_queue,se
 
         """ Save data to database """
         if save_to_db:
-            #print('Appending_Data_To_CSV')
             try:
                     #security_value_df.to_sql('ESGX_SECURITY_VALUE_RESEARCH', db_connect, if_exists='append', index=False) #, schema=port_cfg['client_schema'])
                 #c = Utils.ora_connector(pool=0)
@@ -357,23 +347,28 @@ def paralleled(num,port_date_subset, port_cfg, portfolio_id, pqueue,log_queue,se
                     #a.insert_many('ESGX_SECURITY_VALUE_RESEARCH',security_value_df)
                     log_queue.put([str(analysis_date), security_value_df.shape[0], security_value_df.shape[1]],timeout=0.01)
                     ret_queue.put(security_value_df,timeout=0.01)
+                    #print(f'队列深度：{log_queue.qsize()},{log_queue.full()}{ret_queue.qsize()},{ret_queue.full()}')
                     #security_value_df.to_csv('Result_ESGX_SECURITY_VALUE.csv', mode='a',encoding='utf8')  # , schema=port_cfg['client_schema'])
             except:
                 raise
         toc = timeit.default_timer()
-        done_msg = dtm.now().strftime('%Y-%m-%d.%H.%M.%S.%f') + ": " + analysis_date.strftime('%Y-%m-%d') + \
-                   " Completed in " + str(round(toc-tic,1)) + " s" + '\n'
-        print(f'进程{num}结束')
-        #print(f'队列长度为{pqueue.qsize()}')
-        #return_total_days += 1
-        #print(done_msg)
-        # except Exception as e:
-        #     print('tslib')
-        #     if isinstance(analysis_date, pd.tslib.Timestamp) or isinstance(analysis_date, date):
-        #         analysis_date = analysis_date.strftime('%Y-%m-%d')
-        #     print("Exception-", analysis_date, e)
-    #return return_total_days
-    print("Queue_is_empty")
+        #done_msg = dtm.now().strftime('%Y-%m-%d.%H.%M.%S.%f') + ": " + analysis_date.strftime('%Y-%m-%d') + \
+                   #" Completed in " + str(round(toc-tic,1)) + " s" + '\n'
+        #print(f'{num}_is_not_empty')
+    #print(f'{num}_is_empty')
+    print('aaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
+    pid=os.getpid()
+    pid_queue.put(pid)
+    print(f'current_pid_is_{pid}')
+
+def deamoned():
+    while 1:
+        print('deamoned_is_running')
+        while not pid_queue.empty():
+            pid=pid_queue.get()
+            os.kill(pid)
+            print(f'killed_PID_{pid}')
+        time.sleep(1)
 
 def calculate_security_value(client_id, portfolio_id, start_date, end_date, daily_update):
     results = []
@@ -383,10 +378,11 @@ def calculate_security_value(client_id, portfolio_id, start_date, end_date, dail
     if portfolio_id == -1:#not applicable
         if client_id == -1:#not applicable
             # no portfolio is assigned, so get all of the portfolios for that client
-            stmt = ""
+            stmt = "select p.* from ESGX_PORTFOLIO p JOIN ESGX_CLIENT c " \
+                   "on p.CLIENT_ID = c.CLIENT_ID and c.IS_UPDATED_DAILY = 'YES'"
         else:
             params['client_id']=client_id
-            stmt = ""
+            stmt = "SELECT * FROM ESGX_PORTFOLIO WHERE CLIENT_ID =:client_id "
     else:#applicable
         # find just the portfolio that the user selected in the command line
         params['portfolio_id'] = portfolio_id
