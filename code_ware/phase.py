@@ -34,7 +34,7 @@ else:
     from urllib.parse import quote_plus
 
 
-esgx_db_params = quote_plus("DRIVER={SQL Server Native Client 11.0};SERVER=SSGX-LAB-BL03;DATABASE=ESGX_Database;Trusted_Connection=yes")
+esgx_db_params = ""
 debug_code = False
 save_to_db = True
 concurrent_periods = 2
