@@ -1,6 +1,6 @@
 import time,timeit,pandas as pd,re
 from datetime import datetime as dtm
-class converter:
+class timeformatconverter:
     def str2date(self,dtstr):
         abc=re.findall(r'[a-zA-Z]+',dtstr)
         if len(abc)==0:
@@ -77,14 +77,4 @@ class converter:
         return ret
 if __name__=="__main__":
     a=converter()
-    #b=a.tsp2dt(1545730074)
-    x='mar 2019 12'
-    c=a.obj2pdtsp(x)
-    print(type(c))
-    # print(type(x))
-    print(c)
-    count=100000
-    t0 = 1000*timeit.timeit('start_date = datetime.datetime.strptime(a, "%Y-%m-%d")',
-                            "import datetime\na='2019-9-9'", number=count)
-    t0=round(t0,2)
     #print(f'{t0}')
