@@ -7,7 +7,7 @@ def add(q, index,Q):
     while not q.empty():
         try:
             args = q.get(block=False)
-            Q.put(args[0])
+            #Q.put(args[0])
         except Empty:
             print(f'{index}_Empty')
             pass
@@ -16,11 +16,11 @@ def add(q, index,Q):
     print(f'{index}_QueueIsEmpty')
 
 if __name__ == '__main__':
-    past ,cpus= time.time(),cpu_count()*2
+    past ,cpus= time.time(),cpu_count()*4
     Q= Queue()
     for j in range(1):
         q, p = Queue(), []
-        for i in range(100000):
+        for i in range(2000000):
             q.put((i, i + 1))
         diff=round(time.time()-past,2)*1000
         print(f'PutCost{diff}MS')
@@ -38,8 +38,8 @@ if __name__ == '__main__':
         ts = round((time.time() - past) * 1000, 2)
     print('ProgramStoped')
     rs=[]
-    while not Q.empty():
-        rs.append(Q.get())
+    # while not Q.empty():
+    #     rs.append(Q.get())
     diff = round(time.time() - past, 2) * 1000
     print(f'AppendCost{diff}MS')
     past = time.time()
