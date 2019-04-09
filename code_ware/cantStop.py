@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
 """
-*
-* copyright (c) 2016, 2017 State Street Bank & Trust Co.
-% Description:	Utils for Python3
 """
 import re, datetime, time
 from multiprocessing import Pool, cpu_count, Queue, Process
