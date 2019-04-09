@@ -5,7 +5,7 @@ auth by:Chris
 import re, datetime, time
 from multiprocessing import Pool, cpu_count, Queue, Process
 from _queue import Empty
-import multiprocessing
+import traceback
 
 def add(q, index,Q):
     r = 0
@@ -13,11 +13,18 @@ def add(q, index,Q):
         try:
             args = q.get(block=False)
         except Empty:
-            print('Empty')
-            break
+            print(f'进程 {index} 获取输入队列为空')
         except:
-            print('else' )
-    print(f'{index}_QueueIsEmpty')
+            print('未知异常:')
+            traceback.print_exc()
+
+        if args[0] == 'exit':
+            print(f'进程 {index} 获取退出指令，退出')
+            break
+        print(f'进程 {index} 正正处理{args}')
+
+        time.sleep(0.01)
+    # print(f'{index}_QueueIsEmpty')
 
 
 if __name__ == '__main__':
@@ -26,8 +33,12 @@ if __name__ == '__main__':
     Q= Queue()
     for j in range(1):
         q, p = Queue(), []
+        # 数据项
         for i in range(20000):
-            q.put((i, i + 1))
+            q.put(('ops',i, i + 1))
+        # 控制退出项
+        for i in range(cpus):
+            q.put(('exit',i, i + 1))
         diff=round(time.time()-past,2)*1000
         print(f'PutCost{diff}MS')
         past=time.time()
