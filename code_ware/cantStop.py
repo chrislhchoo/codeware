@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """
+auth by:Chris
 """
 import re, datetime, time
 from multiprocessing import Pool, cpu_count, Queue, Process
