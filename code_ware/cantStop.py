@@ -13,9 +13,8 @@ def add(q, index,Q):
     r = 0
     try:
         args = q.get(block=False)
-        #Q.put(args[0])
     except Empty:
-        #print(f'{index}_Empty')
+        print('Empty')
         pass
     except:
         print('else')
@@ -45,5 +44,4 @@ if __name__ == '__main__':
         past=time.time()
         ts = round((time.time() - past) * 1000, 2)
     print('ProgramRunToTheEnd')
-    #diff = round(time.time() - past, 2) * 1000
 
