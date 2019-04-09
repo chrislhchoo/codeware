@@ -16,7 +16,7 @@ def add(q, index,Q):
             print('Empty')
             break
         except:
-            print('else')
+            print('else' )
     print(f'{index}_QueueIsEmpty')
 
 
