@@ -9,13 +9,14 @@ import multiprocessing
 
 def add(q, index,Q):
     r = 0
-    try:
-        args = q.get(block=False)
-    except Empty:
-        print('Empty')
-        pass
-    except:
-        print('else')
+    while 1:
+        try:
+            args = q.get(block=False)
+        except Empty:
+            print('Empty')
+            break
+        except:
+            print('else')
     print(f'{index}_QueueIsEmpty')
 
 
