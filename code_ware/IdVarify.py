@@ -17,7 +17,6 @@ def varify(card):
         id = card[:-1]
         tail = card[-1]
         tail = int(tail) if tail != 'X' else 10
-        pro = card[0:2]
         gender = 'Female' if int(card[-2]) % 2 == 0 else 'Male'
     except:
         return '身份证输入错误'
@@ -30,10 +29,14 @@ def varify(card):
         birth = dtm.strptime(birth, "%Y%m%d")
         now = dtm.now()
         age = (now - birth).days // 365
-        city = f'{card[0:4]}00'
         country = card[0:6]
-        country = countries[country] if city in countries else f'行政区{country}已被撤销'
+        city = card[0:4]
+        pro = card[0:2]
+        city = f'{card[0:4]}00'
+        pro = f'{card[0:2]}0000'
+        country = countries[country] if country in countries else f'行政区{country}已被撤销'
         city = countries[city] if city in countries else f'行政区{city}已被撤销'
+        pro = countries[pro] if pro in countries else f'行政区{country}已被撤销'
     except ValueError:
         return ('身份证8位日期错误')
     except Exception as e:
@@ -51,7 +54,7 @@ def varify(card):
         'Gender': gender,
         'Birth': birth,
         'Birthday': birthday,
-        'Porvince': province[pro],
+        'Porvince': pro,
         'Age': age,
         'City': city,
         'Country': country,
