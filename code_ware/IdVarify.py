@@ -1,14 +1,12 @@
 from datetime import datetime as dtm
+import globalPara as gp
 
-w = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2, 1]
-div = 11
-mod = [1, 0, 10, 9, 8, 7, 6, 5, 4, 3, 2]
-province = {"11": "北京", "12": "天津", "13": "河北", "14": "山西", "15": "内蒙古", "21": "辽宁", "22": "吉林", "23": "黑龙江",
-            "31": "上海", "32": "江苏", "33": "浙江", "34": "安徽", "35": "福建", "36": "江西", "37": "山东", "41": "河南", "42": "湖北",
-            "43": "湖南", "44": "广东", "45": "广西", "46": "海南", "50": "重庆", "51": "四川", "52": "贵州", "53": "云南", "54": "西藏",
-            "61": "陕西", "62": "甘肃", "63": "青海", "64": "宁夏", "65": "新疆", "71": "台湾", "81": "香港", "82": "澳门", "91": "国外"}
-month = {'01': 'JAN', '02': 'FEB', '03': 'MAR', '04': 'APR', '05': 'MAY', '06': 'JUN', '07': 'JUL', '08': 'AUG',
-         '09': 'SEP', '10': 'OCT', '11': 'NOV', '12': 'DEC'}
+w = gp.weight
+div = gp.div
+mod = gp.mod
+province = gp.province
+month = gp.month
+countries = gp.countries
 
 
 def varify(card):
@@ -32,6 +30,10 @@ def varify(card):
         birth = dtm.strptime(birth, "%Y%m%d")
         now = dtm.now()
         age = (now - birth).days // 365
+        city = f'{card[0:4]}00'
+        country = card[0:6]
+        country = countries[country] if city in countries else f'行政区{country}已被撤销'
+        city = countries[city] if city in countries else f'行政区{city}已被撤销'
     except ValueError:
         return ('身份证8位日期错误')
     except Exception as e:
@@ -50,7 +52,9 @@ def varify(card):
         'Birth': birth,
         'Birthday': birthday,
         'Porvince': province[pro],
-        'Age': age
+        'Age': age,
+        'City': city,
+        'Country': country,
     }
     return ret
 
@@ -58,9 +62,8 @@ def varify(card):
 if __name__ == '__main__':
     PP = [{'Name': 'XXXX', 'ID': '450821199901015619'}]
     for i in PP:
-        for k,v in i.items():
+        for k, v in i.items():
             if 'Name' in k:
                 print(v)
             if 'ID' in k:
                 print(varify(v))
-        print('##############')
