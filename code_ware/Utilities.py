@@ -1,4 +1,4 @@
-import time,timeit,pandas as pd,re
+import time,timeit,pandas_note as pd,re
 from datetime import datetime as dtm
 class timeformatconverter:
     def str2date(self,dtstr):

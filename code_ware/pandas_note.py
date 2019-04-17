@@ -56,7 +56,7 @@ multiprocessing share object
 	ns.df = my_dataframe
 ############################
 convert datetime64 to datetime and back
-import pandas as pd,numpy as np
+import pandas_note as pd,numpy as np
 from datetime import datetime
     a='2019-01-01'
     b=pd.Timestamp(a)

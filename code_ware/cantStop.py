@@ -15,13 +15,14 @@ def add(leakqueue, index):
         try:
             args = leakqueue.get(block=False)
             if args[0] == 'exit':
-                print(f'进程 {index} 获取退出指令，退出')
+                # print(f'进程 {index} 获取退出指令，退出')
                 break
-            print(f'进程 {index} 正正处理{args}')
+                # print(f'进程 {index} 正正处理{args}')
         except Empty:
-            print(f'进程 {index} 获取输入队列为空')
+            continue
+            # print(f'进程 {index} 获取输入队列为空')
         except:
-            print('未知异常:')
+            # print('未知异常:')
             traceback.print_exc()
 
         ti.sleep(0.01)
@@ -29,7 +30,7 @@ def add(leakqueue, index):
 
 
 if __name__ == '__main__':
-    multipy = 1
+    multipy = 8
     past, cpus = ti.time(), cpu_count() * multipy
     Q = Queue()
     for j in range(1):
@@ -51,7 +52,7 @@ if __name__ == '__main__':
             i.join()
         print("JoinFinished")
         diff = round(ti.time() - past, 2) * 1000
-        print(f'LoopCost{diff}MS')
+        print(f'LoopCost_{diff}MS')
         past = ti.time()
         ts = round((ti.time() - past) * 1000, 2)
     print('ProgramRunToTheEnd')

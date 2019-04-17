@@ -10,6 +10,7 @@ countries = gp.countries
 
 
 def varify(card):
+    # global country, city, age, pro, birthday, birth
     if len(card) != 18:
         return '身份证长度错误'
     try:
@@ -42,9 +43,9 @@ def varify(card):
     except Exception as e:
         print(e)
     s = 0
-    for i in range(len(id)):
-        j = int(id[i])
-        add = j * w[i]
+    for id_index in range(len(id)):
+        j = int(id[id_index])
+        add = j * w[id_index]
         s += add
     dived = s % div
     dived = mod[dived]
