@@ -3,16 +3,17 @@
 import time
 import traceback
 from multiprocessing import cpu_count, Queue, Process
-from _queue import Empty
+from queue import Empty
 
 def handleProcess(inQue, outQue, args):
     print('start processFun whit', inQue, outQue, args)
     while 1:
-        time.sleep(0.1)
+        time.sleep(0.001)
         try:
             inData = inQue.get(block=False)
         except Empty:
-            print(f'进程 {args} 获取输入队列为空')
+            #print(f'进程 {args} 获取输入队列为空')
+            time.sleep(0.0001)
             continue
         except:
             print('未知异常:')
@@ -21,15 +22,15 @@ def handleProcess(inQue, outQue, args):
 
 
         if inData[0] == 'exit':
-            print(f'进程 {args} 获取退出指令，退出')
+            #print(f'进程 {args} 获取退出指令，退出')
             try:
                 outQue.put_nowait(['exit',0])
             except:
                 traceback.print_exc()
             break
-        print(f'进程 {args} 正正处理{inData}')
+        #print(f'进程 {args} 正正处理{inData}')
 
-        time.sleep(0.01)
+        time.sleep(0.0001)
 
 inQue,outQue = Queue(),Queue()
 handler = []
@@ -46,8 +47,8 @@ def writeDataProcess(inQue, handlerCount):
                 except:
                     traceback.print_exc()
             break
-        if inQue.qsize() > cpus * 10:
-            time.sleep(0.1)
+        if inQue.qsize() > cpus * 2:
+            time.sleep(0.0001)
             continue
         else:
             try:
@@ -69,7 +70,8 @@ def readDataProcess(outQue, handlerCount):
         try:
             outData = outQue.get(block=False)
         except Empty:
-            print(f'进程 readDataProcess 获取输入队列为空')
+            #print(f'进程 readDataProcess 获取输入队列为空')
+            time.sleep(0.0001)
             continue
         except:
             print('未知异常:')
@@ -85,7 +87,7 @@ def initResouce():
     inQue, outQue, handler = Queue(), Queue(), []
     writer = Process(target=writeDataProcess, args=(inQue,cpus))
     writer.start()
-    time.sleep(0.1)
+    time.sleep(0.0001)
 
     for index in range(cpus):
         handler.append(Process(target=handleProcess, args=(inQue, outQue, index)))
@@ -94,20 +96,20 @@ def initResouce():
 
     reader = Process(target=readDataProcess, args=(outQue, len(handler)))
     reader.start()
-    time.sleep(0.1)
+    time.sleep(0.0001)
 
     return writer,reader
 
 def waitForEnd(writer,reader):
     while 1:
         if writer.is_alive():
-            time.sleep(0.1)
+            time.sleep(0.0001)
             continue
-        print('writer exit')
+        #print('writer exit')
         if reader.is_alive():
-            time.sleep(0.1)
+            time.sleep(0.0001)
             continue
-        print('reader exit')
+        #print('reader exit')
         print('all exit')
         return
 
@@ -116,4 +118,6 @@ def main():
     waitForEnd(writer,reader)
 
 if __name__ == '__main__':
+    past=time.time()
     main()
+    print(f'Cost {round(time.time()-past,2)}S')
