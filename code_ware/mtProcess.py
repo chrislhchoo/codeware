@@ -6,12 +6,14 @@ from multiprocessing import cpu_count, Queue, Process
 from queue import Empty
 
 def handleProcess(inQue, outQue, args):
+    a=0
     print('start processFun whit', inQue, outQue, args)
     while 1:
-        time.sleep(0.001)
+        time.sleep(0.0001)
         try:
             inData = inQue.get(block=False)
         except Empty:
+            a+=1
             #print(f'进程 {args} 获取输入队列为空')
             time.sleep(0.0001)
             continue
