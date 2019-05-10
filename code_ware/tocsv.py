@@ -21,7 +21,7 @@ if __name__ == '__main__':
     database = 'db'  # 库名
     engine = create_engine(f'mssql+pymssql://{user}:{pwd}@{ip}:{port}/{database}')
     #########################################################
-    tablename = 'test'
+    tablename = 'test'#输入表名，此选项于文件名有关
     sql = f"select * from {tablename}"
     df = pd.read_sql(sql, engine)
     filename = rf'{tablename}.zip'  # 导出的文件名
