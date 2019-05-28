@@ -162,7 +162,8 @@ class ConnectPostgresql(ConnectMysql):  # Postgresql驱动类
 
 class ConnectSqlserver(ConnectMysql):  # Mssql驱动类
     def __init__(self, host, user, pwd, database, port):
-        self.cursor=self.Connector(host, user, pwd, database, port)
+        self.cursor = self.Connector(host, user, pwd, database, port)
+
     def Connector(self, host, user, pwd, database, port):
         self.db = pymssql.connect(
             host=host,
@@ -291,4 +292,3 @@ if __name__ == '__main__':
     sql = "select * from log limit 100"
     rs = cnn.Dql(sql)
     print(rs[10]['date'])
-    # print(rs)
