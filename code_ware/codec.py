@@ -1,4 +1,5 @@
 import base64
+default_key='123'
 def encode(key, clear):
     enc = []
     for i in range(len(clear)):
